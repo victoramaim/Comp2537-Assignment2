@@ -60,10 +60,6 @@ function isValidSession(req) {
     return false;
 }
 
-async function promote(name, db) {
-    await db.collection("users").updateOne({ name: name }, { $set: { user_type: "admin" } });
-}
-
 // Implement this middleware to check if a user is logged in
 function sessionValidation(req,res,next) {
     if (isValidSession(req)) {
