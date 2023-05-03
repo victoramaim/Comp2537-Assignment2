@@ -12,12 +12,10 @@ KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="a
 <div class="container">
     <header class="d-flex justify-content-center py-3">
       <ul class="nav nav-pills">
-        <!-- <li class="nav-item"><a href="/" class="nav-link active" aria-current="page">Home</a></li> -->
-        <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
-        <li class="nav-item"><a href="/members" class="nav-link">Members</a></li>
-        <li class="nav-item"><a href="/admin" class="nav-link">Administrators</a></li>
-        <li class="nav-item"><a href="/contact" class="nav-link">Contact</a></li>
-        <li class="nav-item"><a href="/about" class="nav-link">About</a></li>
+        <% for (let i = 0; i < locals.navLinks.length; i++) { %>
+        <li class="nav-item"><a href="<%= locals.navLinks[i].link %>" 
+          class="nav-link <% if (locals.navLinks[i].link == locals.currentURL) { %>active<% } %>"><%= locals.navLinks[i].name %></a></li>
+        <% } %>
       </ul>
     </header>
   </div>

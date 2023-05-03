@@ -10,7 +10,17 @@ const saltRounds = 12;
 
 const port = process.env.PORT || 3000;
 
+const url = require('url');
+
 const app = express();
+
+var navLinks = [
+    {name: "Home", link: "/"},
+    {name: "About", link: "/about"},
+    {name: "Contact", link: "/contact"},
+    {name: "Members", link: "/members"},
+    {name: "Administrator", link: "/admin"}
+]
 
 const Joi = require("joi");
 
@@ -91,6 +101,12 @@ function adminAuthorization(req, res, next) {
 }
 
 // Done
+app.use("/", (req,res,next) => {
+    app.locals.navLinks = navLinks;
+    app.locals.currentURL = url.parse(req.url).pathname;
+    next();
+});
+
 app.get('/', (req,res) => {
     if (!req.session.authenticated) {
     res.render('index');
@@ -247,13 +263,18 @@ app.get('/logout', (req,res) => {
     res.render('index');
 });
 
-app.use('/members', sessionValidation);
 app.get('/members', (req,res) => {
+    if (!req.session.authenticated) {
+        res.redirect('/');
+    }
     console.log(req.session);
     res.render('members', {username: req.session.username});
 });
 
-app.get('/admin', sessionValidation, adminAuthorization, async (req,res) => {
+app.get('/admin', async (req,res) => {
+    if (!req.session.authenticated || !req.session.user_type == 'admin') {
+        res.redirect('/');
+    }
 	const result = await userCollection.find().project({username: 1, user_type: 1, _id: 1}).toArray();
  
     res.render("admin", {users: result});
