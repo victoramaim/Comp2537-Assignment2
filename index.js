@@ -272,12 +272,13 @@ app.get('/members', (req,res) => {
 });
 
 app.get('/admin', async (req,res) => {
-    if (!req.session.authenticated || !req.session.user_type == 'admin') {
-        res.redirect('/');
-    }
-	const result = await userCollection.find().project({username: 1, user_type: 1, _id: 1}).toArray();
+    if (req.session.authenticated && req.session.user_type == 'admin') {
+        const result = await userCollection.find().project({username: 1, user_type: 1, _id: 1}).toArray();
  
     res.render("admin", {users: result});
+    } else {
+        res.status(401).render("errorMessage", { error: "User not authorized" });
+    }
 });
 
 app.get('/admin/promote/:id', sessionValidation, adminAuthorization, async (req, res) => {
